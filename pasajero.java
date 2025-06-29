@@ -1,23 +1,21 @@
-public class Pasajero{
-    private int dni;
+class pasajero{
+    private String dni;
     private String nombre;
     private String email;
     private String telefono;
 
-    // Constructor
-    public Pasajero(int dni, String nombre, String email, String telefono) {
+    public pasajero(String dni, String nombre, String email, String telefono){
         this.dni = dni;
         this.nombre = nombre;
         this.email = email;
         this.telefono = telefono;
     }
 
-    // Getters y Setters
-    public int getDni() {
+    public String getDni() {
         return dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 
@@ -45,8 +43,8 @@ public class Pasajero{
         this.telefono = telefono;
     }
 
-    @Override
-    public String toString() {
-        return "DNI: " + dni + ", Nombre: " + nombre + ", Email: " + email + ", Tel: " + telefono;
+    @Override 
+    public String toString(){
+        return "Dni: " + dni + "\nNombre: "+nombre+"\nEmail: "+email+"\nTelefono: "+telefono;
     }
 }

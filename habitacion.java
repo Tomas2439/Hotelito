@@ -1,74 +1,85 @@
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class Habitacion {
+public class habitacion {
     private int numero;
-    private Categoria categoria;
-    private double precio;
-    private EstadoHabitacion estado;
+    private String categoria;
+    private String detalle;
+    private double costoPorNoche;
+    private Boolean disponible;
     private String fechaIngreso;
-    private Pasajero pasajeroAsignado;
-    
-    public Habitacion(int numero, Categoria categoria, double precio) {
+    private String dniPasajeroH;
+
+    public habitacion(int numero, String categoria, String detalle, double costoPorNoche, String fechaIngreso, String dniPasajeroH){
         this.numero = numero;
         this.categoria = categoria;
-        this.precio = precio;
-        this.estado = EstadoHabitacion.DISPONIBLE;
+        this.detalle = detalle;
+        this.costoPorNoche = costoPorNoche;
+        this.disponible = false;
         this.fechaIngreso = null;
-        this.pasajeroAsignado = null;
+        this.dniPasajeroH = null;
+    }
+
+    public int getNumero() {
+        return numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getDetalle() {
+        return detalle;
+    }
+
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
+    }
+
+    public double getCostoPorNoche() {
+        return costoPorNoche;
+    }
+
+    public void setCostoPorNoche(double costoPorNoche) {
+        this.costoPorNoche = costoPorNoche;
+    }
+
+    public Boolean getDisponible() {
+        return disponible;
+    }
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
+    }
+
+    public String getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(String fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public String getDniPasajeroH() {
+        return dniPasajeroH;
+    }
+
+    public void setDniPasajeroH(String dniPasajeroH) {
+        this.dniPasajeroH = dniPasajeroH;
     }
     
-    // Getters y Setters
-    public int getNumero() { return numero; }
-    public void setNumero(int numero) { this.numero = numero; }
-    
-    public Categoria getCategoria() { return categoria; }
-    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
-    
-    public double getPrecio() { return precio; }
-    public void setPrecio(double precio) { this.precio = precio; }
-    
-    public EstadoHabitacion getEstado() { return estado; }
-    public void setEstado(EstadoHabitacion estado) { this.estado = estado; }
-    
-    public String getFechaIngreso() { return fechaIngreso; }
-    public void setFechaIngreso(String fechaIngreso) { this.fechaIngreso = fechaIngreso; }
-    
-    public Pasajero getPasajeroAsignado() { return pasajeroAsignado; }
-    public void setPasajeroAsignado(Pasajero pasajeroAsignado) { this.pasajeroAsignado = pasajeroAsignado; }
-    
-    //Se asigna habitación
-    public boolean asignarHabitacion(Pasajero pasajero) {
-        if (this.estado == EstadoHabitacion.DISPONIBLE) {
-            this.pasajeroAsignado = pasajero;
-            this.estado = EstadoHabitacion.OCUPADA;
-            
-            // Generar fecha actual como String
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            this.fechaIngreso = sdf.format(new Date());
-            
-            return true;
+    @Override 
+    public String toString(){
+        String estado = disponible ? "Ocupado" : "Libre";
+        String infoOcupacion = "";
+        if(disponible){
+            infoOcupacion = "\n, Pasajero Dni" + dniPasajeroH + "\n Ingreso: "+ fechaIngreso; 
         }
-        return false;
-    }
-    
-    // Método para liberar habitación
-    public boolean liberarHabitacion() {
-        if (this.estado == EstadoHabitacion.OCUPADA) {
-            this.pasajeroAsignado = null;
-            this.estado = EstadoHabitacion.DISPONIBLE;
-            this.fechaIngreso = null;
-            return true;
-        }
-        return false;
-    }
-    
-    @Override
-    public String toString() {
-        String info = "Habitación " + numero + " - " + categoria + " - $" + precio + " - " + estado;
-        if (pasajeroAsignado != null) {
-            info += " - Ocupada por: " + pasajeroAsignado.getNombre() + " (Ingreso: " + fechaIngreso + ")";
-        }
-        return info;
+        return "Habitacion: "+ numero + "(" + categoria + "):"+ detalle + ", Costo por noche: $"+ costoPorNoche + "\n Estado: "+ estado + infoOcupacion;
     }
 }
