@@ -1,7 +1,11 @@
 package src;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.File;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +18,10 @@ class Hotel {
     private ArrayList <Habitacion> habitaciones;
     private HashMap <String, Pasajero> pasajeros;
     /*
-     * Preferi optar por hasmMap para incorporar los datos desde un txt. en vez de una base de datos.
-     * Mucho lio sino. 
+     * Preferi optar por hasmMap para incorporar los datos desde un .txt en vez de una base de datos.
+     * Mucho lio sino. Aunque queria efectuar cambios y guardarlos dentro de los txt.
+     * Incorpore guardado y cargado desde Pasajero y Habitaciones .txt
+     * Espero que le guste y cualquier duda que vea dentro del codigo digamelo.
      */
     private Scanner teclado;
 
@@ -171,8 +177,8 @@ class Hotel {
             return false;
         } else {
             LocalDateTime fechaSalida = LocalDateTime.now();
-            long diasHospedaje = ChronoUnit.DAYS.between(habitacion.getFechaIngreso(), fechaSalida);
-            if (diasHospedaje == 0) { // Si la estadía es menos de un día, cobrar un día
+            long diasHospedaje = ChronoUnit.DAYS.between(habitacion.getFechaIngreso(), fechaSalida);//En funcion del LocalDateTime.
+            if (diasHospedaje == 0) { // Si la estadia es menos de un día, cobra un dia
                 diasHospedaje = 1;
             }
 
@@ -226,30 +232,7 @@ class Hotel {
         System.out.println("Monto Actual de Caja: $" + String.format("%.2f", montoActualCaja));
     }
 
-    // Método para cargar datos desde un archivo (simulado)
-    public void cargarHabitacionesDesdeArchivo(String nombreArchivo) {
-        System.out.println("\nCargando habitaciones desde " + nombreArchivo + "...");
-        try (Scanner fileScanner = new Scanner(new File(nombreArchivo))) {
-            while (fileScanner.hasNextLine()) {
-                String linea = fileScanner.nextLine();
-                try {
-                    String[] partes = linea.trim().split(",");
-                    int numero = Integer.parseInt(partes[0]);
-                    String categoria = partes[1];
-                    String detalle = partes[2];
-                    double costo = Double.parseDouble(partes[3]);
-                    Habitacion habitacion = new Habitacion(numero, categoria, detalle, costo);
-                    this.agregarHabitacion(habitacion); // Usar el método del hotel para verificar duplicados
-                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Error al leer línea del archivo de habitaciones: " + linea.trim() + " - " + e.getMessage());
-                }
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("Error: Archivo de habitaciones '" + nombreArchivo + "' no encontrado.");
-        }
-    }
-
-    public void cargarPasajerosDesdeArchivo(String nombreArchivo) {
+    public void cargarPasArchivo(String nombreArchivo) {
         System.out.println("\nCargando pasajeros desde " + nombreArchivo + "...");
         try (Scanner fileScanner = new Scanner(new File(nombreArchivo))) {
             while (fileScanner.hasNextLine()) {
@@ -326,6 +309,8 @@ class Hotel {
                     break;
                 case "8":
                     System.out.println("Saliendo del sistema. ¡Hasta pronto!");
+                    guardarHabArchivo("habitaciones.txt");
+                    guardarPasArchivo("pasajeros.txt");
                     teclado.close(); // Cerrar el scanner al salir
                     return;
                 default:
@@ -442,4 +427,105 @@ class Hotel {
             }
         }
     }
+
+    //Guardado de informacion en los archivos .txt
+        public void guardarHabArchivo(String nombreArchivo) {
+        System.out.println("Guardando habitaciones en " + nombreArchivo + "...");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo))) {
+            for (Habitacion h : habitaciones) {
+                // Formato: numero,categoria,detalle,costoPorNoche,enUso,fechaIngreso,dniPasajeroActual
+                String dniPasajeroStr = (h.estaEnUso() && h.getDniPasajeroActual() != null) ? h.getDniPasajeroActual() : "";
+                String fechaIngresoGuardar = h.getFechaIngreso() != null ? h.getFechaIngreso().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "";
+
+                writer.println(
+                    h.getNumero() + "," +
+                    h.getCategoria() + "," +
+                    h.getDetalle() + "," +
+                    h.getCostoPorNoche() + "," +
+                    h.estaEnUso() + "," +
+                    fechaIngresoGuardar + "," + // Asegúrate de que el formato coincida al cargar
+                    dniPasajeroStr
+                );
+            }
+            System.out.println("Habitaciones guardadas correctamente.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar habitaciones en el archivo " + nombreArchivo + ": " + e.getMessage());
+        }
+    }
+
+    // Metodo para guardar pasajeros en un archivo
+    public void guardarPasArchivo(String nombreArchivo) {
+        System.out.println("Guardando pasajeros en " + nombreArchivo + "...");
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo))) {
+            for (Pasajero p : pasajeros.values()) {
+                writer.println(
+                    p.getDni() + "," +
+                    p.getNombre() + "," +
+                    p.getEmail() + "," +
+                    p.getTelefono()
+                );
+            }
+            System.out.println("Pasajeros guardados correctamente.");
+        } catch (IOException e) {
+            System.err.println("Error al guardar pasajeros en el archivo " + nombreArchivo + ": " + e.getMessage());
+        }
+    }
+    //Metodo para cargar habitaciones al archivo.
+    public void cargarHabArchivo(String nombreArchivo) {
+        System.out.println("\nCargando habitaciones desde " + nombreArchivo + "...");
+        try (Scanner fileScanner = new Scanner(new File(nombreArchivo))) {
+            while (fileScanner.hasNextLine()) {
+                String linea = fileScanner.nextLine();
+                try {
+                    String[] partes = linea.trim().split(",");
+                    int numero = Integer.parseInt(partes[0]);
+                    String categoria = partes[1];
+                    String detalle = partes[2];
+                    double costo = Double.parseDouble(partes[3]);
+                    boolean enUso = Boolean.parseBoolean(partes[4]); // Leer 'enUso'
+                    String fechaIngresoStr = partes.length > 5 ? partes[5] : ""; // Leer fecha, puede estar vacío
+                    String dniPasajero = partes.length > 6 ? partes[6] : ""; // Leer DNI, puede estar vacío
+
+                    Habitacion habitacion = new Habitacion(numero, categoria, detalle, costo);
+                    // Si estaba en uso, configurarla como tal
+                    if (enUso) {
+                        // Aquí es CRÍTICO el formato del String.
+                        // Si tu Habitacion usa LocalDateTime:
+                        LocalDateTime fechaIngreso = null;
+                        if (!fechaIngresoStr.isEmpty()) {
+                            try {
+                                fechaIngreso = LocalDateTime.parse(fechaIngresoStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                            } catch (java.time.format.DateTimeParseException e) {
+                                System.err.println("Advertencia: No se pudo parsear la fecha de ingreso '" + fechaIngresoStr + "' para habitación " + numero + ". Se establecerá null.");
+                            }
+                        }
+                        habitacion.ocupar(dniPasajero, fechaIngreso); // Usa el método que recibe LocalDateTime
+                    }
+
+                    // Previene añadir duplicados si el archivo contiene números de habitación repetidos
+                    // Revisa que la habitación no esté ya en la lista
+                    boolean yaExiste = false;
+                    for (Habitacion h : this.habitaciones) {
+                        if (h.getNumero() == habitacion.getNumero()) {
+                            yaExiste = true;
+                            break;
+                        }
+                    }
+                    if (!yaExiste) {
+                        this.habitaciones.add(habitacion);
+                        System.out.println("Habitación " + habitacion.getNumero() + " agregada correctamente.");
+                    } else {
+                        System.out.println("Advertencia: La habitación con el número " + habitacion.getNumero() + " ya existe en memoria, se omite cargar del archivo.");
+                        // Podrías decidir actualizarla en lugar de omitirla
+                    }
+
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    System.err.println("Error al leer línea del archivo de habitaciones: " + linea.trim() + " - " + e.getMessage());
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Error: Archivo de habitaciones '" + nombreArchivo + "' no encontrado.");
+        }
+    }
+
 }

@@ -3,3 +3,4 @@
 103,Suite,Cama king-size y sala,150.0
 201,Simple,Cama individual,50.0
 202,Doble,Dos camas individuales,75.0
+203,Suite,Cama King-size con sala y minibar,250
