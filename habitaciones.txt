@@ -1,6 +1,6 @@
-101,Simple,Cama individual,50.0
-102,Doble,Dos camas individuales,75.0
-103,Suite,Cama king-size y sala,150.0
-201,Simple,Cama individual,50.0
-202,Doble,Dos camas individuales,75.0
-203,Suite,Cama King-size con sala y minibar,250
+102,Doble,Dos camas individuales,75.0,false,,
+103,Suite,Cama king-size y sala,150.0,true,2025-06-29 22:18:44,87654321
+201,Simple,Cama individual,50.0,false,,
+202,Doble,Dos camas individuales,75.0,false,,
+203,Suite,Cama King-size con sala y minibar,250.0,true,2025-06-29 22:15:54,12345678
+101,Simple,Cama individual y minibar,55.0,false,,
