@@ -29,7 +29,7 @@ class Pasajero {
         return telefono;
     }
 
-    // Setters (si se permiten modificaciones directas, aunque los métodos CRUD del Hotel son preferibles)
+    // Setters 
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -44,6 +44,6 @@ class Pasajero {
 
     @Override
     public String toString() {
-        return "DNI: " + dni + ", Nombre: " + nombre + ", Email: " + email + ", Teléfono: " + telefono;
+        return "DNI: " + dni + ", Nombre: " + nombre + ", Email: " + email + ", Telefono: " + telefono;
     }
 }

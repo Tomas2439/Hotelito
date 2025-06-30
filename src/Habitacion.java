@@ -48,7 +48,7 @@ class Habitacion {
         return dniPasajeroActual;
     }
 
-    // Setters (para modificaciones a través de Hotel)
+    // Setters 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
     }
@@ -61,7 +61,7 @@ class Habitacion {
         this.costoPorNoche = costoPorNoche;
     }
 
-    // Métodos específicos de la habitación
+    // Metodos especificos de la habitacion
     public boolean ocupar(String dniPasajero, LocalDateTime fechaIngreso) {
         if (!this.enUso) {
             this.enUso = true;
@@ -93,6 +93,6 @@ class Habitacion {
         if (enUso) {
             infoOcupacion = ", Pasajero DNI: " + dniPasajeroActual + ", Ingreso: " + fechaIngreso.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
         }
-        return "Habitación Nº" + numero + " (" + categoria + "): " + detalle + ", Costo/Noche: $" + String.format("%.2f", costoPorNoche) + ", Estado: " + estado + infoOcupacion;
+        return "Habitacion N°" + numero + " (" + categoria + "): " + detalle + ", Costo/Noche: $" + String.format("%.2f", costoPorNoche) + ", Estado: " + estado + infoOcupacion;
     }
 }

@@ -1,4 +1,5 @@
 package src;
+
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,16 +16,19 @@ class Hotel {
     private String nombre;
     private double montoActualCaja;
     private double cajaInicial;
-    private ArrayList <Habitacion> habitaciones;
-    private HashMap <String, Pasajero> pasajeros;
+    private ArrayList<Habitacion> habitaciones;
+    private HashMap<String, Pasajero> pasajeros;
     /*
-     * Preferi optar por hasmMap para incorporar los datos desde un .txt en vez de una base de datos.
-     * Mucho lio sino. Aunque queria efectuar cambios y guardarlos dentro de los txt.
+     * Preferi optar por hashMap para incorporar los datos desde un .txt en vez de
+     * una base de datos.
+     * Mucho lio sino. Aunque queria efectuar cambios y guardarlos dentro de los
+     * txt.
      * Incorpore guardado y cargado desde Pasajero y Habitaciones .txt
      * Espero que le guste y cualquier duda que vea dentro del codigo digamelo.
      */
     private Scanner teclado;
 
+    // Constructor del hotel
     public Hotel(String nombre, double cajaInicial) {
         this.nombre = nombre;
         this.montoActualCaja = cajaInicial;
@@ -34,18 +38,20 @@ class Hotel {
         this.teclado = new Scanner(System.in);
     }
 
+    // Agregar una habitacion
     public boolean agregarHabitacion(Habitacion habitacion) {
         for (Habitacion h : habitaciones) {
             if (h.getNumero() == habitacion.getNumero()) {
-                System.out.println("Error: La habitación con el número " + habitacion.getNumero() + " ya existe.");
+                System.out.println("Error: La habitacion con el numero " + habitacion.getNumero() + " ya existe.");
                 return false;
             }
         }
         habitaciones.add(habitacion);
-        System.out.println("Habitación " + habitacion.getNumero() + " agregada correctamente.");
+        System.out.println("Habitacion " + habitacion.getNumero() + " agregada correctamente.");
         return true;
     }
 
+    // Buscar habitacion
     public Habitacion buscarHabitacion(int numeroHabitacion) {
         for (Habitacion habitacion : habitaciones) {
             if (habitacion.getNumero() == numeroHabitacion) {
@@ -55,7 +61,9 @@ class Hotel {
         return null;
     }
 
-    public boolean actualizarHabitacion(int numeroHabitacion, String nuevaCategoria, String nuevoDetalle, Double nuevoCosto) {
+    // Actualizar habitacion
+    public boolean actualizarHabitacion(int numeroHabitacion, String nuevaCategoria, String nuevoDetalle,
+            Double nuevoCosto) {
         Habitacion habitacion = buscarHabitacion(numeroHabitacion);
         if (habitacion != null) {
             if (nuevaCategoria != null && !nuevaCategoria.isEmpty()) {
@@ -67,42 +75,48 @@ class Hotel {
             if (nuevoCosto != null) {
                 habitacion.setCostoPorNoche(nuevoCosto);
             }
-            System.out.println("Habitación " + numeroHabitacion + " actualizada correctamente.");
+            System.out.println("Habitacion " + numeroHabitacion + " actualizada correctamente.");
             return true;
         }
-        System.out.println("Error: Habitación " + numeroHabitacion + " no encontrada para actualizar.");
+        System.out.println("Error: Habitacion " + numeroHabitacion + " no encontrada para actualizar.");
         return false;
     }
 
+    // Eliminar habitacion
     public boolean eliminarHabitacion(int numeroHabitacion) {
         Habitacion habitacion = buscarHabitacion(numeroHabitacion);
         if (habitacion != null) {
             if (habitacion.estaEnUso()) {
-                System.out.println("Error: No se puede eliminar la habitación " + numeroHabitacion + " porque está ocupada.");
+                System.out.println(
+                        "Error: No se puede eliminar la habitacion " + numeroHabitacion + " porque esta ocupada.");
                 return false;
             }
             habitaciones.remove(habitacion);
-            System.out.println("Habitación " + numeroHabitacion + " eliminada correctamente.");
+            System.out.println("Habitacion " + numeroHabitacion + " eliminada correctamente.");
             return true;
         }
-        System.out.println("Error: Habitación " + numeroHabitacion + " no encontrada para eliminar.");
+        System.out.println("Error: Habitacion " + numeroHabitacion + " no encontrada para eliminar.");
         return false;
     }
 
+    // Agregar pasajero
     public boolean agregarPasajero(Pasajero pasajero) {
         if (pasajeros.containsKey(pasajero.getDni())) {
             System.out.println("Error: El pasajero con DNI " + pasajero.getDni() + " ya existe.");
             return false;
         }
         pasajeros.put(pasajero.getDni(), pasajero);
-        System.out.println("Pasajero " + pasajero.getNombre() + " (DNI: " + pasajero.getDni() + ") agregado correctamente.");
+        System.out.println(
+                "Pasajero " + pasajero.getNombre() + " (DNI: " + pasajero.getDni() + ") agregado correctamente.");
         return true;
     }
 
+    // Buscar pasajero
     public Pasajero buscarPasajero(String dniPasajero) {
         return pasajeros.get(dniPasajero);
     }
 
+    // Actualizar pasajero
     public boolean actualizarPasajero(String dniPasajero, String nuevoNombre, String nuevoEmail, String nuevoTelefono) {
         Pasajero pasajero = buscarPasajero(dniPasajero);
         if (pasajero != null) {
@@ -122,12 +136,14 @@ class Hotel {
         return false;
     }
 
+    // Eliminar pasajero
     public boolean eliminarPasajero(String dniPasajero) {
         if (pasajeros.containsKey(dniPasajero)) {
-            // Verificar si el pasajero está ocupando alguna habitación antes de eliminarlo
+            // Verificar si el pasajero esta ocupando alguna habitacion
             for (Habitacion habitacion : habitaciones) {
                 if (dniPasajero.equals(habitacion.getDniPasajeroActual())) {
-                    System.out.println("Error: No se puede eliminar el pasajero con DNI " + dniPasajero + " porque está ocupando la habitación " + habitacion.getNumero() + ".");
+                    System.out.println("Error: No se puede eliminar el pasajero con DNI " + dniPasajero
+                            + " porque ocupa la habitacion " + habitacion.getNumero() + ".");
                     return false;
                 }
             }
@@ -139,12 +155,13 @@ class Hotel {
         return false;
     }
 
+    // Asigar habitacion
     public boolean asignarHabitacion(String dniPasajero, int numeroHabitacion) {
         Habitacion habitacion = buscarHabitacion(numeroHabitacion);
         Pasajero pasajero = buscarPasajero(dniPasajero);
 
         if (habitacion == null) {
-            System.out.println("Error: Habitación " + numeroHabitacion + " no encontrada.");
+            System.out.println("Error: Habitacion " + numeroHabitacion + " no encontrada.");
             return false;
         }
         if (pasajero == null) {
@@ -154,38 +171,45 @@ class Hotel {
 
         if (habitacion.estaEnUso()) {
             // Simular excepción o manejarla de forma controlada
-            System.out.println("Excepción: La habitación " + numeroHabitacion + " ya está ocupada por el DNI " + habitacion.getDniPasajeroActual() + ".");
+            System.out.println("Excepcion: La habitacion " + numeroHabitacion + " esta ocupada por el DNI "
+                    + habitacion.getDniPasajeroActual() + ".");
             return false;
         } else {
             LocalDateTime fechaIngreso = LocalDateTime.now();
             habitacion.ocupar(dniPasajero, fechaIngreso);
-            System.out.println("Habitación " + numeroHabitacion + " asignada al pasajero " + pasajero.getNombre() + " (DNI: " + dniPasajero + ") el " + fechaIngreso.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ".");
+            System.out.println("Habitacion " + numeroHabitacion + " asignada al pasajero " + pasajero.getNombre()
+                    + " (DNI: " + dniPasajero + ") el "
+                    + fechaIngreso.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ".");
             return true;
         }
     }
 
+    // Liberar habitacion
     public boolean liberarHabitacion(int numeroHabitacion, String nombreCajero) {
         Habitacion habitacion = buscarHabitacion(numeroHabitacion);
 
         if (habitacion == null) {
-            System.out.println("Error: Habitación " + numeroHabitacion + " no encontrada.");
+            System.out.println("Error: Habitacion " + numeroHabitacion + " no encontrada.");
             return false;
         }
 
         if (!habitacion.estaEnUso()) {
-            System.out.println("Advertencia: La habitación " + numeroHabitacion + " ya está libre.");
+            System.out.println("Advertencia: La habitacion " + numeroHabitacion + " ya esta libre.");
             return false;
         } else {
             LocalDateTime fechaSalida = LocalDateTime.now();
-            long diasHospedaje = ChronoUnit.DAYS.between(habitacion.getFechaIngreso(), fechaSalida);//En funcion del LocalDateTime.
+            long diasHospedaje = ChronoUnit.DAYS.between(habitacion.getFechaIngreso(), fechaSalida);// En funcion del
+                                                                                                    // LocalDateTime.
             if (diasHospedaje == 0) { // Si la estadia es menos de un día, cobra un dia
                 diasHospedaje = 1;
             }
 
             double costoTotal = habitacion.getCostoPorNoche() * diasHospedaje;
             this.montoActualCaja += costoTotal;
-            System.out.println("Cobro realizado por habitación " + numeroHabitacion + ": $" + String.format("%.2f", costoTotal) + " (" + diasHospedaje + " día(s) a $" + String.format("%.2f", habitacion.getCostoPorNoche()) + "/día).");
-            System.out.println("Cajero (" + nombreCajero + ") ha liberado la habitación " + numeroHabitacion + ".");
+            System.out.println("Cobro realizado por habitacion " + numeroHabitacion + ": $"
+                    + String.format("%.2f", costoTotal) + " (" + diasHospedaje + " día(s) a $"
+                    + String.format("%.2f", habitacion.getCostoPorNoche()) + "/día).");
+            System.out.println("Cajero (" + nombreCajero + ") ha liberado la habitacion " + numeroHabitacion + ".");
             System.out.println("Monto actual en caja: $" + String.format("%.2f", this.montoActualCaja));
 
             habitacion.liberar();
@@ -193,10 +217,12 @@ class Hotel {
         }
     }
 
+    // Registrar retiro pasajero
     public boolean registrarRetiroHotel(int numeroHabitacion, String nombreCajero) {
         return liberarHabitacion(numeroHabitacion, nombreCajero);
     }
 
+    // Consultar habitaciones
     public void consultarHabitacionesDisponibles() {
         ArrayList<Habitacion> habitacionesLibres = new ArrayList<>();
         for (Habitacion h : habitaciones) {
@@ -208,13 +234,15 @@ class Hotel {
         if (!habitacionesLibres.isEmpty()) {
             System.out.println("\n--- Habitaciones Disponibles ---");
             for (Habitacion h : habitacionesLibres) {
-                System.out.println("  - Habitación Nº" + h.getNumero() + " (" + h.getCategoria() + "): " + h.getDetalle() + ", Costo/Noche: $" + String.format("%.2f", h.getCostoPorNoche()));
+                System.out.println("  - Habitacion Nº" + h.getNumero() + " (" + h.getCategoria() + "): "
+                        + h.getDetalle() + ", Costo/Noche: $" + String.format("%.2f", h.getCostoPorNoche()));
             }
         } else {
             System.out.println("\nNo hay habitaciones disponibles en este momento.");
         }
     }
 
+    // Listar habitaciones
     public void listarTodasLasHabitaciones() {
         if (habitaciones.isEmpty()) {
             System.out.println("\nNo hay habitaciones registradas en el hotel.");
@@ -226,12 +254,14 @@ class Hotel {
         }
     }
 
+    // Mostrar caja
     public void mostrarEstadoCaja() {
         System.out.println("\n--- Estado Actual de Caja ---");
         System.out.println("Monto Inicial de Caja: $" + String.format("%.2f", cajaInicial));
         System.out.println("Monto Actual de Caja: $" + String.format("%.2f", montoActualCaja));
     }
 
+    // Carga Archivo Pasajeros
     public void cargarPasArchivo(String nombreArchivo) {
         System.out.println("\nCargando pasajeros desde " + nombreArchivo + "...");
         try (Scanner fileScanner = new Scanner(new File(nombreArchivo))) {
@@ -244,9 +274,10 @@ class Hotel {
                     String email = partes[2];
                     String telefono = partes[3];
                     Pasajero pasajero = new Pasajero(dni, nombre, email, telefono);
-                    this.agregarPasajero(pasajero); // Usar el método del hotel para verificar duplicados
+                    this.agregarPasajero(pasajero); // verifica duplicados
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("Error al leer línea del archivo de pasajeros: " + linea.trim() + " - " + e.getMessage());
+                    System.out.println(
+                            "Error al leer linea del archivo de pasajeros: " + linea.trim() + " - " + e.getMessage());
                 }
             }
         } catch (FileNotFoundException e) {
@@ -254,8 +285,7 @@ class Hotel {
         }
     }
 
-
-    // Métodos de menú para interacción con el usuario
+    // Menu principal
     public void menuPrincipal() {
         while (true) {
             System.out.println("\n--- Menú Principal del Hotel ---");
@@ -319,6 +349,7 @@ class Hotel {
         }
     }
 
+    // Menu habitaciones
     private void menuGestionHabitaciones() {
         while (true) {
             System.out.println("\n--- Gestión de Habitaciones ---");
@@ -367,7 +398,8 @@ class Hotel {
                         System.out.print("Ingrese nuevo costo por noche (dejar vacío para no cambiar): ");
                         String costoStr = teclado.nextLine();
                         Double nuevoCosto = costoStr.isEmpty() ? null : Double.parseDouble(costoStr);
-                        actualizarHabitacion(num, nuevaCat.isEmpty() ? null : nuevaCat, nuevoDet.isEmpty() ? null : nuevoDet, nuevoCosto);
+                        actualizarHabitacion(num, nuevaCat.isEmpty() ? null : nuevaCat,
+                                nuevoDet.isEmpty() ? null : nuevoDet, nuevoCosto);
                     } catch (NumberFormatException e) {
                         System.out.println("Entrada inválida para número o costo. Intente de nuevo.");
                     }
@@ -380,6 +412,7 @@ class Hotel {
         }
     }
 
+    // Menu pasajeros
     private void menuGestionPasajeros() {
         while (true) {
             System.out.println("\n--- Gestión de Pasajeros ---");
@@ -418,7 +451,8 @@ class Hotel {
                     String nuevoEmail = teclado.nextLine();
                     System.out.print("Ingrese nuevo teléfono (dejar vacío para no cambiar): ");
                     String nuevoTelefono = teclado.nextLine();
-                    actualizarPasajero(dniModificar, nuevoNombre.isEmpty() ? null : nuevoNombre, nuevoEmail.isEmpty() ? null : nuevoEmail, nuevoTelefono.isEmpty() ? null : nuevoTelefono);
+                    actualizarPasajero(dniModificar, nuevoNombre.isEmpty() ? null : nuevoNombre,
+                            nuevoEmail.isEmpty() ? null : nuevoEmail, nuevoTelefono.isEmpty() ? null : nuevoTelefono);
                     break;
                 case "d":
                     return; // Volver al menú principal
@@ -428,24 +462,27 @@ class Hotel {
         }
     }
 
-    //Guardado de informacion en los archivos .txt
-        public void guardarHabArchivo(String nombreArchivo) {
+    // Guardar archivo habitaciones
+    public void guardarHabArchivo(String nombreArchivo) {
         System.out.println("Guardando habitaciones en " + nombreArchivo + "...");
         try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo))) {
             for (Habitacion h : habitaciones) {
-                // Formato: numero,categoria,detalle,costoPorNoche,enUso,fechaIngreso,dniPasajeroActual
-                String dniPasajeroStr = (h.estaEnUso() && h.getDniPasajeroActual() != null) ? h.getDniPasajeroActual() : "";
-                String fechaIngresoGuardar = h.getFechaIngreso() != null ? h.getFechaIngreso().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : "";
+                // Formato:
+                // numero,categoria,detalle,costoPorNoche,enUso,fechaIngreso,dniPasajeroActual
+                String dniPasajeroStr = (h.estaEnUso() && h.getDniPasajeroActual() != null) ? h.getDniPasajeroActual()
+                        : "";
+                String fechaIngresoGuardar = h.getFechaIngreso() != null
+                        ? h.getFechaIngreso().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        : "";
 
                 writer.println(
-                    h.getNumero() + "," +
-                    h.getCategoria() + "," +
-                    h.getDetalle() + "," +
-                    h.getCostoPorNoche() + "," +
-                    h.estaEnUso() + "," +
-                    fechaIngresoGuardar + "," + // Asegúrate de que el formato coincida al cargar
-                    dniPasajeroStr
-                );
+                        h.getNumero() + "," +
+                                h.getCategoria() + "," +
+                                h.getDetalle() + "," +
+                                h.getCostoPorNoche() + "," +
+                                h.estaEnUso() + "," +
+                                fechaIngresoGuardar + "," +
+                                dniPasajeroStr);
             }
             System.out.println("Habitaciones guardadas correctamente.");
         } catch (IOException e) {
@@ -453,24 +490,24 @@ class Hotel {
         }
     }
 
-    // Metodo para guardar pasajeros en un archivo
+    // Guardar archivo pasajeros
     public void guardarPasArchivo(String nombreArchivo) {
         System.out.println("Guardando pasajeros en " + nombreArchivo + "...");
         try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo))) {
             for (Pasajero p : pasajeros.values()) {
                 writer.println(
-                    p.getDni() + "," +
-                    p.getNombre() + "," +
-                    p.getEmail() + "," +
-                    p.getTelefono()
-                );
+                        p.getDni() + "," +
+                                p.getNombre() + "," +
+                                p.getEmail() + "," +
+                                p.getTelefono());
             }
             System.out.println("Pasajeros guardados correctamente.");
         } catch (IOException e) {
             System.err.println("Error al guardar pasajeros en el archivo " + nombreArchivo + ": " + e.getMessage());
         }
     }
-    //Metodo para cargar habitaciones al archivo.
+
+    // Carga archivo habitaciones
     public void cargarHabArchivo(String nombreArchivo) {
         System.out.println("\nCargando habitaciones desde " + nombreArchivo + "...");
         try (Scanner fileScanner = new Scanner(new File(nombreArchivo))) {
@@ -482,28 +519,27 @@ class Hotel {
                     String categoria = partes[1];
                     String detalle = partes[2];
                     double costo = Double.parseDouble(partes[3]);
-                    boolean enUso = Boolean.parseBoolean(partes[4]); // Leer 'enUso'
-                    String fechaIngresoStr = partes.length > 5 ? partes[5] : ""; // Leer fecha, puede estar vacío
-                    String dniPasajero = partes.length > 6 ? partes[6] : ""; // Leer DNI, puede estar vacío
+                    boolean enUso = Boolean.parseBoolean(partes[4]); // Lee 'enUso'
+                    String fechaIngresoStr = partes.length > 5 ? partes[5] : ""; // Lee fecha,
+                    String dniPasajero = partes.length > 6 ? partes[6] : ""; // Lee DNI,
 
                     Habitacion habitacion = new Habitacion(numero, categoria, detalle, costo);
-                    // Si estaba en uso, configurarla como tal
+                    // Si estaba en uso, lo deja como esta.
                     if (enUso) {
-                        // Aquí es CRÍTICO el formato del String.
-                        // Si tu Habitacion usa LocalDateTime:
                         LocalDateTime fechaIngreso = null;
                         if (!fechaIngresoStr.isEmpty()) {
                             try {
-                                fechaIngreso = LocalDateTime.parse(fechaIngresoStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                                fechaIngreso = LocalDateTime.parse(fechaIngresoStr,
+                                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                             } catch (java.time.format.DateTimeParseException e) {
-                                System.err.println("Advertencia: No se pudo parsear la fecha de ingreso '" + fechaIngresoStr + "' para habitación " + numero + ". Se establecerá null.");
+                                System.err.println("Advertencia: No se pudo parsear la fecha de ingreso '"
+                                        + fechaIngresoStr + "' para habitación " + numero + ". Se establecerá null.");
                             }
                         }
-                        habitacion.ocupar(dniPasajero, fechaIngreso); // Usa el método que recibe LocalDateTime
+                        habitacion.ocupar(dniPasajero, fechaIngreso); // Usa el metodo que recibe LocalDateTime
                     }
-
-                    // Previene añadir duplicados si el archivo contiene números de habitación repetidos
-                    // Revisa que la habitación no esté ya en la lista
+                    // Previene los duplicados si el archivo contiene habitaciones repetidas.
+                    // Revisa que la habitacion no este en la lista.
                     boolean yaExiste = false;
                     for (Habitacion h : this.habitaciones) {
                         if (h.getNumero() == habitacion.getNumero()) {
@@ -513,14 +549,15 @@ class Hotel {
                     }
                     if (!yaExiste) {
                         this.habitaciones.add(habitacion);
-                        System.out.println("Habitación " + habitacion.getNumero() + " agregada correctamente.");
+                        System.out.println("Habitacion " + habitacion.getNumero() + " agregada correctamente.");
                     } else {
-                        System.out.println("Advertencia: La habitación con el número " + habitacion.getNumero() + " ya existe en memoria, se omite cargar del archivo.");
-                        // Podrías decidir actualizarla en lugar de omitirla
+                        System.out.println("Advertencia: La habitacion con el numero " + habitacion.getNumero()
+                                + " ya existe en memoria, se omite cargar del archivo.");
                     }
 
                 } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-                    System.err.println("Error al leer línea del archivo de habitaciones: " + linea.trim() + " - " + e.getMessage());
+                    System.err.println("Error al leer linea del archivo de habitaciones: " + linea.trim() + " - "
+                            + e.getMessage());
                 }
             }
         } catch (FileNotFoundException e) {
